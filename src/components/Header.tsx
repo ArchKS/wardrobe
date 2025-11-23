@@ -1,5 +1,5 @@
 import { ViewMode } from '../types'
-import { Grid, Calendar, LayoutGrid, BarChart3, Download, Tag, MapPin, Sparkles, Shirt, Package } from 'lucide-react'
+import { Grid, Calendar, BarChart3, Download, Tag, MapPin, Sparkles, Shirt, Package } from 'lucide-react'
 
 interface HeaderProps {
   viewMode: ViewMode
@@ -14,7 +14,7 @@ export default function Header({ viewMode, setViewMode, showAnalytics, setShowAn
     <header className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">我的衣橱</h1>
+          <h1 className="text-2xl font-bold text-gray-900">穿搭数据库</h1>
 
           <div className="flex items-center gap-4">
             <div className="flex bg-gray-100 rounded-lg p-1">
