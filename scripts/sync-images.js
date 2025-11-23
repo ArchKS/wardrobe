@@ -1,8 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import sharp from 'sharp'
-import exifr from 'exifr'
 import cliProgress from 'cli-progress'
 
 
@@ -15,7 +13,7 @@ const config = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf-8'))
 
 const IMAGES_DIR = path.join(__dirname, '../public/images')
 const DATA_FILE = path.join(__dirname, '../src/data/wardrobe.json')
-const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.heic']
+const IMAGE_EXTENSIONS = ['.webp'] // 只处理 webp 格式的图片
 
 console.log('\n╔════════════════════════════════════════╗')
 console.log('║   衣橱图片同步工具 v1.0               ║')
@@ -116,124 +114,27 @@ if (newImages.length === 0) {
   console.log('\n✅ 没有新图片需要添加')
 }
 
-// 转换 HEIC 文件为 JPEG
-const convertHeicToJpeg = async (heicPath) => {
-  // const ext = path.extname(heicPath).toLowerCase()
-  // if (ext !== '.heic' && ext !== '.heif') {
-  //   return heicPath // 不是 HEIC 文件，直接返回
-  // }
-  return heicPath // 不是 HEIC 文件，直接返回
+// 从文件名中提取日期：name_id_yyyyMMdd.webp -> yyyy-MM-dd
+function getDateFromFilename(filename) {
+  // 匹配格式：xxx_xxx_20231115.webp
+  const match = filename.match(/_(\d{8})\.webp$/);
 
-  // try {
-  //   const basename = path.basename(heicPath, ext)
-  //   const jpegPath = `/images/${basename}.jpg`
-  //   const fullHeicPath = path.join(IMAGES_DIR, path.basename(heicPath))
-  //   const fullJpegPath = path.join(IMAGES_DIR, `${basename}.jpg`)
+  if (match && match[1]) {
+    const dateStr = match[1];
+    const year = dateStr.substring(0, 4);
+    const month = dateStr.substring(4, 6);
+    const day = dateStr.substring(6, 8);
 
-  //   console.log(`  🔄 Converting HEIC to JPEG: ${heicPath} -> ${jpegPath}`)
-
-  //   await sharp(fullHeicPath)
-  //     .rotate() // 自动根据EXIF方向信息旋转图片
-  //     .jpeg({ quality: 90 })
-  //     .toFile(fullJpegPath)
-
-  //   console.log(`  ✅ Converted successfully`)
-
-  //   // 删除原始 HEIC 文件
-  //   fs.unlinkSync(fullHeicPath)
-  //   console.log(`  🗑️  Deleted original HEIC file`)
-
-  //   return jpegPath
-  // } catch (err) {
-  //   console.error(`  ❌ Failed to convert ${heicPath}:`, err.message)
-  //   return heicPath // 转换失败，返回原始路径
-  // }
-}
-
-
-async function getImageContentCreateTime(filePath) {
-  try {
-    // console.log(`\n========== 图片信息: ${path.basename(filePath)} ==========`);
-
-    // 方法1: 使用 macOS mdls 命令获取内容创建时间
-    if (process.platform === 'darwin') {
-      // console.log('\n🍎 使用 macOS mdls 命令获取元数据...');
-      try {
-        const { execSync } = await import('child_process');
-        const mdlsOutput = execSync(`mdls -name kMDItemContentCreationDate "${filePath}"`, { encoding: 'utf-8' });
-        // console.log('mdls 输出:', mdlsOutput);
-
-        // 解析输出: kMDItemContentCreationDate = 2025-11-01 14:15:00 +0000
-        const match = mdlsOutput.match(/kMDItemContentCreationDate\s*=\s*(.+)/);
-        if (match && match[1] && match[1].trim() !== '(null)') {
-          const dateStr = match[1].trim();
-          // console.log(`  ✅ 从 mdls 获取到内容创建时间: ${dateStr}`);
-          const date = new Date(dateStr);
-          if (!isNaN(date.getTime())) {
-            // 只返回年月日部分
-            return date.toISOString().split('T')[0];
-          }
-        }
-      } catch (mdlsErr) {
-        console.log('  ⚠️  mdls 命令执行失败:', mdlsErr.message);
-      }
+    // 验证日期是否有效
+    const date = new Date(`${year}-${month}-${day}`);
+    if (!isNaN(date.getTime())) {
+      return `${year}-${month}-${day}`;
     }
-
-    // 方法2: 使用 exifr 解析 EXIF 数据
-    console.log('\n📋 尝试使用 exifr 解析 EXIF 数据...');
-    const meta = await exifr.parse(filePath);
-
-    if (meta) {
-      console.log('EXIF 数据:');
-      console.log(JSON.stringify(meta, null, 2));
-
-      // 列出所有可能的日期字段
-      console.log('\n📅 日期相关字段:');
-      const allKeys = Object.keys(meta);
-      const dateRelatedKeys = allKeys.filter(key =>
-        key.toLowerCase().includes('date') ||
-        key.toLowerCase().includes('time') ||
-        key.toLowerCase().includes('created')
-      );
-
-      if (dateRelatedKeys.length > 0) {
-        dateRelatedKeys.forEach(key => {
-          console.log(`  ${key}: ${meta[key]}`);
-        });
-      }
-
-      // 优先级：DateTimeOriginal (拍摄时间) > CreateDate > DateTime > ModifyDate
-      const exifDate = meta?.DateTimeOriginal
-                    || meta?.CreateDate
-                    || meta?.DateTime
-                    || meta?.ModifyDate
-                    || meta?.DateCreated
-                    || meta?.DateTimeDigitized;
-
-      if (exifDate) {
-        console.log(`  ✅ 使用 EXIF 拍摄时间: ${exifDate}`);
-        // 只返回年月日部分
-        return new Date(exifDate).toISOString().split('T')[0];
-      }
-    }
-
-    console.log('===============================================\n');
-
-    // 如果没有找到任何日期，使用文件系统创建时间作为后备
-    console.log(`  ⚠️  未找到内容创建日期，使用文件系统时间`);
-    const stats = fs.statSync(filePath);
-    const createTime = stats.birthtime || stats.ctime || stats.mtime;
-    console.log(`  📁 文件系统时间: ${createTime.toISOString()}`);
-    // 只返回年月日部分
-    return createTime.toISOString().split('T')[0];
-  } catch (err) {
-    console.error(`  ❌ 解析失败 ${filePath}:`, err.message);
-    // 如果解析失败，使用文件系统创建时间
-    const stats = fs.statSync(filePath);
-    const createTime = stats.birthtime || stats.ctime || stats.mtime;
-    // 只返回年月日部分
-    return createTime.toISOString().split('T')[0];
   }
+
+  // 如果无法从文件名提取，使用文件系统时间
+  console.log(`  ⚠️  无法从文件名提取日期: ${filename}，使用文件系统时间`);
+  return null;
 }
 
 
@@ -253,26 +154,32 @@ if (newImages.length > 0) {
 
   for (let i = 0; i < newImages.length; i++) {
     const imagePath = newImages[i]
-    const filename = path.basename(imagePath, path.extname(imagePath))
+    const filename = path.basename(imagePath)
 
     addBar.update(i, { filename: filename.substring(0, 30) })
 
-    // 如果是 HEIC 文件，先转换为 JPEG
-    const finalImagePath = await convertHeicToJpeg(imagePath)
+    // 从文件名中提取日期
+    const dateFromFilename = getDateFromFilename(filename)
+
+    // 如果无法从文件名提取日期，使用文件系统时间作为后备
+    let itemDate = dateFromFilename
+    if (!itemDate) {
+      const fullImagePath = path.join(IMAGES_DIR, filename)
+      const stats = fs.statSync(fullImagePath)
+      const createTime = stats.birthtime || stats.ctime || stats.mtime
+      itemDate = createTime.toISOString().split('T')[0]
+    }
+
     // 生成唯一 ID
     const timestamp = Date.now()
     const random = Math.floor(Math.random() * 1000)
     const id = `${timestamp}-${random}`
 
-    // 从文件名提取可能的信息
-    const fullImagePath = path.join(IMAGES_DIR, path.basename(finalImagePath))
-    const orgTime = await getImageContentCreateTime(fullImagePath)
-
     // 创建新条目
     const newItem = {
       id: id,
-      images: [finalImagePath],
-      time: orgTime, // 创建时间
+      images: [imagePath],
+      time: itemDate, // 从文件名提取的日期
       location: '',
       brand: [], // 品牌（数组）
       pattern: '', // 款式/型号

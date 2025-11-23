@@ -114,3 +114,13 @@ npm run minsize
     },
 这条数据，就把对应的图片命名为`Arcteryx_SwayerHood_20251123_id.jpg`，id从1开始，用于处理images有多张的情况。
 该脚本执行后，同步修改wardrobe.json，把images里的路径改为新的命名
+
+
+# lazy load
+
+# xattr获取内容创建时间
+
+# sync时显示进度条
+
+# convert to webp
+目前的方案我要重改一下，images里的HEIC或者JPG、PNG等图片太大了，我打算转换为webp并压缩到1M以下，但这样又会丢失内容创建时间数据，所以你在转换成webp的时候，文件命名格式为：name_id_yyyyMMDD.webp，sync-images.js读取写入到wardrobe.json的时候，就用文件名中的日期作为time，而不是文件本身的创建日期
