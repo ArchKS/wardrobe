@@ -74,9 +74,8 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete }: Clot
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all cursor-move ${
-          isDragOver ? 'ring-4 ring-blue-500 scale-105' : ''
-        }`}
+        className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all cursor-move ${isDragOver ? 'ring-4 ring-blue-500 scale-105' : ''
+          }`}
       >
         <div className="relative group">
           <div
@@ -108,9 +107,8 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete }: Clot
                 {item.images.map((_, index) => (
                   <div
                     key={index}
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      index === currentImageIndex ? 'bg-white' : 'bg-white/50'
-                    }`}
+                    className={`w-1.5 h-1.5 rounded-full ${index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                      }`}
                   />
                 ))}
               </div>
@@ -149,9 +147,8 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete }: Clot
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-4 h-4 ${
-                    i < item.satisfaction ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-                  }`}
+                  className={`w-4 h-4 ${i < item.satisfaction ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                    }`}
                 />
               ))}
             </div>
@@ -159,13 +156,16 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete }: Clot
 
           <p className="text-sm text-gray-600 mb-2">{item.category.join(', ') || '未分类'}</p>
 
-          <div className="flex flex-wrap gap-1 mb-3">
-            {item.style.map(style => (
-              <span key={style} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
-                {style}
-              </span>
-            ))}
-          </div>
+          {
+            item.style && item.style.filter(v=>v.trim()!="").length ? <div className="flex flex-wrap gap-1 mb-3">
+              {item.style.map(style => (
+                <span key={style} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                  {style}
+                </span>
+              ))}
+            </div> : null
+          }
+
 
           <div className="space-y-1 text-xs text-gray-500">
             <div className="flex items-center gap-1">
@@ -240,9 +240,8 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete }: Clot
                   {item.images.map((_, index) => (
                     <div
                       key={index}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        index === currentImageIndex ? 'bg-white w-8' : 'bg-white/50'
-                      }`}
+                      className={`w-2 h-2 rounded-full transition-all ${index === currentImageIndex ? 'bg-white w-8' : 'bg-white/50'
+                        }`}
                     />
                   ))}
                 </div>

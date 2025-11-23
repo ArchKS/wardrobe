@@ -138,6 +138,13 @@ function getDateFromFilename(filename) {
 }
 
 
+// 生成唯一 ID
+function generateUniqueId(index) {
+  const timestamp = Date.now()
+  const random = Math.random().toString(36).substring(2, 9)
+  return `${timestamp}-${index}-${random}`
+}
+
 // 为新图片创建条目
 let newItemsCount = 0
 if (newImages.length > 0) {
@@ -170,10 +177,8 @@ if (newImages.length > 0) {
       itemDate = createTime.toISOString().split('T')[0]
     }
 
-    // 生成唯一 ID
-    const timestamp = Date.now()
-    const random = Math.floor(Math.random() * 1000)
-    const id = `${timestamp}-${random}`
+    // 生成唯一 ID（包含索引确保唯一性）
+    const id = generateUniqueId(i)
 
     // 创建新条目
     const newItem = {
