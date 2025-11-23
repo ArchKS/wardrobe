@@ -1,0 +1,60 @@
+{
+  "parts": [
+    "S",
+    "M",
+    "L"
+  ],
+  "brands": [
+    "Arcteryx",
+    "KOLON",
+    "Montbell",
+    "Descente",
+    "New Balance",
+    "Salomon",
+    "LuluLemon",
+    "The North Face",
+    "Adidas",
+    "MUJI",
+    "UNIQLO",
+    "安踏",
+    "Beams",
+    "Niki",
+    "Niko",
+    "MLB",
+    "Sacai",
+    "GentleSpace",
+    "KingBaby",
+    "Yohji",
+    "其他"
+  ],
+  "categories": [
+    "外套",
+    "衬衫",
+    "卫衣",
+    "裤子",
+    "鞋子",
+    "配饰",
+    "帽子"
+  ],
+  "materials": [
+    "纯棉",
+    "聚酯纤维",
+    "尼龙",
+    "羊毛",
+    "羊绒",
+    "皮革",
+    "亚麻",
+    "银",
+    "金"
+  ],
+  "styles": [
+    "休闲",
+    "运动",
+    "老钱风",
+    "街头"
+  ],
+  "scenes": [
+    "试衣",
+    "展示"
+  ]
+}
