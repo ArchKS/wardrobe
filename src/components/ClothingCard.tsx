@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { ClothingItem } from '../types'
 import { ChevronLeft, ChevronRight, Star, Edit2, MapPin, Calendar, GripVertical, Trash2, X } from 'lucide-react'
 import EditModal from './EditModal'
+import LazyImage from './LazyImage'
 
 interface ClothingCardProps {
   item: ClothingItem
@@ -82,7 +83,7 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete }: Clot
             className="aspect-[3/4] bg-gray-200 cursor-pointer"
             onDoubleClick={() => setIsImagePreviewOpen(true)}
           >
-            <img
+            <LazyImage
               src={item.images[currentImageIndex]}
               alt={`${item.brand.join(', ')} ${item.category.join(', ')}`}
               className="w-full h-full object-cover"
