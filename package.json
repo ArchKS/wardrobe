@@ -11,6 +11,7 @@
     "fix-ids": "node scripts/fix-duplicate-ids.js",
     "minsize": "node scripts/minsize.js",
     "rename": "node scripts/rename.js",
+    "add-field": "node scripts/add-field.cjs",
     "dev": "npm run sync && vite --host",
     "build": "npm run sync && tsc && vite build",
     "preview": "vite preview"

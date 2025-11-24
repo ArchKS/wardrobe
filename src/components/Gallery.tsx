@@ -18,9 +18,10 @@ interface GalleryProps {
   onUpdateItem: (item: ClothingItem) => void
   onMergeItems: (sourceId: string, targetId: string) => void
   onDeleteItem: (id: string) => void
+  onCreateItem: (item: ClothingItem) => void
 }
 
-export default function Gallery({ items, viewMode, onUpdateItem, onMergeItems, onDeleteItem }: GalleryProps) {
+export default function Gallery({ items, viewMode, onUpdateItem, onMergeItems, onDeleteItem, onCreateItem }: GalleryProps) {
   if (items.length === 0) {
     return (
       <div className="text-center py-12">
@@ -30,35 +31,37 @@ export default function Gallery({ items, viewMode, onUpdateItem, onMergeItems, o
   }
 
   if (viewMode === 'grid') {
-    return <GridView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
+    return <GridView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} onCreateItem={onCreateItem} />
   } else if (viewMode === 'timeline') {
-    return <TimelineView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
+    return <TimelineView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} onCreateItem={onCreateItem} />
   } else if (viewMode === 'category') {
-    return <CategoryView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
+    return <CategoryView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} onCreateItem={onCreateItem} />
   } else if (viewMode === 'brand') {
-    return <BrandView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
+    return <BrandView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} onCreateItem={onCreateItem} />
   } else if (viewMode === 'size') {
-    return <PartView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
+    return <PartView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} onCreateItem={onCreateItem} />
   } else if (viewMode === 'material') {
-    return <MaterialView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
+    return <MaterialView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} onCreateItem={onCreateItem} />
   } else if (viewMode === 'style') {
-    return <StyleView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
+    return <StyleView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} onCreateItem={onCreateItem} />
+  } else if (viewMode === 'price') {
+    return <PriceView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} onCreateItem={onCreateItem} />
   } else {
-    return <LocationView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
+    return <LocationView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} onCreateItem={onCreateItem} />
   }
 }
 
-function GridView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void }) {
+function GridView({ items, onUpdateItem, onMergeItems, onDeleteItem, onCreateItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void, onCreateItem: (item: ClothingItem) => void }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {items.map(item => (
-        <ClothingCard key={item.id} item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} />
+        <ClothingCard key={item.id} item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} onCreate={onCreateItem} />
       ))}
     </div>
   )
 }
 
-function TimelineView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void }) {
+function TimelineView({ items, onUpdateItem, onMergeItems, onDeleteItem, onCreateItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void, onCreateItem: (item: ClothingItem) => void }) {
   const groupedByDate = useMemo(() => {
     const groups: Record<string, ClothingItem[]> = {}
     items.forEach(item => {
@@ -88,7 +91,7 @@ function TimelineView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { ite
               <div className="flex gap-4 min-w-max pl-6">
                 {dateItems.map(item => (
                   <div key={item.id} className="w-64 flex-shrink-0">
-                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} />
+                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} onCreate={onCreateItem} />
                   </div>
                 ))}
               </div>
@@ -100,7 +103,7 @@ function TimelineView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { ite
   )
 }
 
-function CategoryView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void }) {
+function CategoryView({ items, onUpdateItem, onMergeItems, onDeleteItem, onCreateItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void, onCreateItem: (item: ClothingItem) => void }) {
   const groupedByCategory = useMemo(() => {
     const groups: Record<string, ClothingItem[]> = {}
     items.forEach(item => {
@@ -124,7 +127,7 @@ function CategoryView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { ite
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {categoryItems.map(item => (
-              <ClothingCard key={item.id} item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} />
+              <ClothingCard key={item.id} item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} onCreate={onCreateItem} />
             ))}
           </div>
         </div>
@@ -133,7 +136,7 @@ function CategoryView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { ite
   )
 }
 
-function BrandView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void }) {
+function BrandView({ items, onUpdateItem, onMergeItems, onDeleteItem, onCreateItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void, onCreateItem: (item: ClothingItem) => void }) {
   const groupedByBrand = useMemo(() => {
     const groups: Record<string, ClothingItem[]> = {}
     items.forEach(item => {
@@ -165,7 +168,7 @@ function BrandView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items:
               <div className="flex gap-4 min-w-max pl-6">
                 {brandItems.map(item => (
                   <div key={item.id} className="w-64 flex-shrink-0">
-                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} />
+                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} onCreate={onCreateItem} />
                   </div>
                 ))}
               </div>
@@ -177,7 +180,7 @@ function BrandView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items:
   )
 }
 
-function PartView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void }) {
+function PartView({ items, onUpdateItem, onMergeItems, onDeleteItem, onCreateItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void, onCreateItem: (item: ClothingItem) => void }) {
   const groupedByPart = useMemo(() => {
     const groups: Record<string, ClothingItem[]> = {}
     items.forEach(item => {
@@ -207,7 +210,7 @@ function PartView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: 
               <div className="flex gap-4 min-w-max pl-6">
                 {partItems.map(item => (
                   <div key={item.id} className="w-64 flex-shrink-0">
-                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} />
+                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} onCreate={onCreateItem} />
                   </div>
                 ))}
               </div>
@@ -219,7 +222,7 @@ function PartView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: 
   )
 }
 
-function MaterialView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void }) {
+function MaterialView({ items, onUpdateItem, onMergeItems, onDeleteItem, onCreateItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void, onCreateItem: (item: ClothingItem) => void }) {
   const groupedByMaterial = useMemo(() => {
     const groups: Record<string, ClothingItem[]> = {}
     items.forEach(item => {
@@ -249,7 +252,7 @@ function MaterialView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { ite
               <div className="flex gap-4 min-w-max pl-6">
                 {materialItems.map(item => (
                   <div key={item.id} className="w-64 flex-shrink-0">
-                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} />
+                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} onCreate={onCreateItem} />
                   </div>
                 ))}
               </div>
@@ -261,7 +264,7 @@ function MaterialView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { ite
   )
 }
 
-function StyleView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void }) {
+function StyleView({ items, onUpdateItem, onMergeItems, onDeleteItem, onCreateItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void, onCreateItem: (item: ClothingItem) => void }) {
   const groupedByStyle = useMemo(() => {
     const groups: Record<string, ClothingItem[]> = {}
     items.forEach(item => {
@@ -303,7 +306,7 @@ function StyleView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items:
               <div className="flex gap-4 min-w-max pl-6">
                 {styleItems.map(item => (
                   <div key={item.id} className="w-64 flex-shrink-0">
-                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} />
+                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} onCreate={onCreateItem} />
                   </div>
                 ))}
               </div>
@@ -315,7 +318,7 @@ function StyleView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items:
   )
 }
 
-function LocationView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void }) {
+function LocationView({ items, onUpdateItem, onMergeItems, onDeleteItem, onCreateItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void, onCreateItem: (item: ClothingItem) => void }) {
   const groupedByLocation = useMemo(() => {
     const groups: Record<string, ClothingItem[]> = {}
     items.forEach(item => {
@@ -345,7 +348,67 @@ function LocationView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { ite
               <div className="flex gap-4 min-w-max pl-6">
                 {locationItems.map(item => (
                   <div key={item.id} className="w-64 flex-shrink-0">
-                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} />
+                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} onCreate={onCreateItem} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function PriceView({ items, onUpdateItem, onMergeItems, onDeleteItem, onCreateItem }: { items: ClothingItem[], onUpdateItem: (item: ClothingItem) => void, onMergeItems: (sourceId: string, targetId: string) => void, onDeleteItem: (id: string) => void, onCreateItem: (item: ClothingItem) => void }) {
+  const groupedByPrice = useMemo(() => {
+    const groups: Record<string, ClothingItem[]> = {
+      '2000元以上': [],
+      '1000～2000元': [],
+      '500～1000元': [],
+      '500元以下': [],
+    }
+
+    items.forEach(item => {
+      const price = item.price || 0
+      if (price < 500) {
+        groups['500元以下'].push(item)
+      } else if (price < 1000) {
+        groups['500～1000元'].push(item)
+      } else if (price < 2000) {
+        groups['1000～2000元'].push(item)
+      } else {
+        groups['2000元以上'].push(item)
+      }
+    })
+
+    // 按照价格档位顺序返回
+    return [
+      ['2000元以上', groups['2000元以上']],
+      ['1000～2000元', groups['1000～2000元']],
+      ['500～1000元', groups['500～1000元']],
+      ['500元以下', groups['500元以下']],
+    ] as [string, ClothingItem[]][]
+  }, [items])
+
+  return (
+    <div className="space-y-6">
+      {groupedByPrice.map(([priceRange, priceItems]) => (
+        <div key={priceRange} className="relative">
+          <div className="flex items-center gap-4 mb-3">
+            <div className="w-3 h-3 rounded-full bg-blue-600"></div>
+            <h3 className="text-lg font-semibold text-gray-900">
+              {priceRange} ({priceItems.length}) {getStarRating(priceItems)}
+            </h3>
+            <div className="flex-1 h-px bg-gray-200"></div>
+          </div>
+          <div className="ml-7 relative">
+            <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+            <div className="overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              <div className="flex gap-4 min-w-max pl-6">
+                {priceItems.map(item => (
+                  <div key={item.id} className="w-64 flex-shrink-0">
+                    <ClothingCard item={item} onUpdate={onUpdateItem} onMerge={onMergeItems} onDelete={onDeleteItem} onCreate={onCreateItem} />
                   </div>
                 ))}
               </div>

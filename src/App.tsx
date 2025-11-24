@@ -76,6 +76,10 @@ function App() {
     ))
   }
 
+  const handleCreateItem = (newItem: ClothingItem) => {
+    setItems(prev => [...prev, newItem])
+  }
+
   const handleExportData = () => {
     const dataStr = JSON.stringify({ items }, null, 2)
     const dataBlob = new Blob([dataStr], { type: 'application/json' })
@@ -136,6 +140,7 @@ function App() {
             onUpdateItem={handleUpdateItem}
             onMergeItems={handleMergeItems}
             onDeleteItem={handleDeleteItem}
+            onCreateItem={handleCreateItem}
           />
         )}
       </div>

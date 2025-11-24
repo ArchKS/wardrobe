@@ -16,6 +16,7 @@ export interface ClothingItem {
   price?: number; // 价格
   tags?: string[]; // 其他自定义标签
   notes?: string; // 备注
+  isPurchased?: boolean; // 是否已购入，默认为否
   isDelete?: number; // 0 或 undefined = 正常，1 = 标记删除
 }
 
@@ -23,7 +24,7 @@ export interface WardrobeData {
   items: ClothingItem[];
 }
 
-export type ViewMode = 'grid' | 'timeline' | 'category' | 'brand' | 'location' | 'style' | 'material' | 'size';
+export type ViewMode = 'grid' | 'timeline' | 'category' | 'brand' | 'location' | 'style' | 'material' | 'size' | 'price';
 
 export interface FilterOptions {
   brands: string[];

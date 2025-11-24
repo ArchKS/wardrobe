@@ -9,9 +9,10 @@ interface ClothingCardProps {
   onUpdate: (item: ClothingItem) => void
   onMerge: (sourceId: string, targetId: string) => void
   onDelete: (id: string) => void
+  onCreate: (item: ClothingItem) => void
 }
 
-export default function ClothingCard({ item, onUpdate, onMerge, onDelete }: ClothingCardProps) {
+export default function ClothingCard({ item, onUpdate, onMerge, onDelete, onCreate }: ClothingCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(item.primaryImageIndex || 0)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
@@ -138,6 +139,14 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete }: Clot
               {item.images.length} 张
             </div>
           )}
+
+          {item.isPurchased && (
+            <div className="absolute bottom-2 right-2 bg-green-600 text-white p-1.5 rounded-full shadow-lg">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          )}
         </div>
 
         <div className="p-4">
@@ -192,6 +201,7 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete }: Clot
             onUpdate(updatedItem)
             setIsEditModalOpen(false)
           }}
+          onCreate={onCreate}
         />
       )}
 

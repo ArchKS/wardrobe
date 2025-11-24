@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ClothingItem } from '../types'
-import { X } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react'
 import config from '../data/config.json'
 import SearchableSelect from './SearchableSelect'
 import MultiSearchableSelect from './MultiSearchableSelect'
@@ -10,10 +10,13 @@ interface EditModalProps {
   item: ClothingItem
   onClose: () => void
   onSave: (item: ClothingItem) => void
+  onCreate: (item: ClothingItem) => void
 }
 
-export default function EditModal({ item, onClose, onSave }: EditModalProps) {
+export default function EditModal({ item, onClose, onSave, onCreate }: EditModalProps) {
   const [formData, setFormData] = useState(item)
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false)
+  const [previewImageIndex, setPreviewImageIndex] = useState(0)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,6 +28,67 @@ export default function EditModal({ item, onClose, onSave }: EditModalProps) {
       ? formData.style.filter(s => s !== style)
       : [...formData.style, style]
     setFormData({ ...formData, style: newStyles })
+  }
+
+  const handleRemoveImage = (index: number, imagePath: string) => {
+    // 从文件路径中提取文件名和日期
+    const fileName = imagePath.split('/').pop() || ''
+    const dateMatch = fileName.match(/(\d{8})/)
+    let extractedDate = new Date().toISOString().split('T')[0]
+
+    if (dateMatch) {
+      const dateStr = dateMatch[1]
+      const year = dateStr.substring(0, 4)
+      const month = dateStr.substring(4, 6)
+      const day = dateStr.substring(6, 8)
+      extractedDate = `${year}-${month}-${day}`
+    }
+
+    // 生成新的ID
+    const newId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+    // 创建新的空白项
+    const newItem: ClothingItem = {
+      id: newId,
+      images: [imagePath],
+      time: extractedDate,
+      location: '',
+      brand: [],
+      pattern: '',
+      size: '',
+      category: [],
+      style: [],
+      material: '',
+      satisfaction: 3,
+      scene: '',
+      notes: `从 ${formData.brand.join(', ')} 分离出来`
+    }
+
+    // 从当前项中移除图片
+    const newImages = formData.images.filter((_, i) => i !== index)
+    const newPrimaryIndex = formData.primaryImageIndex || 0
+
+    if (newImages.length > 0) {
+      // 更新当前项
+      const updatedFormData = {
+        ...formData,
+        images: newImages,
+        primaryImageIndex: newPrimaryIndex >= newImages.length ? 0 : newPrimaryIndex
+      }
+      setFormData(updatedFormData)
+      onSave(updatedFormData)
+    } else {
+      // 如果没有图片了，标记为删除
+      const updatedFormData = {
+        ...formData,
+        images: newImages,
+        isDelete: 1
+      }
+      onSave(updatedFormData)
+    }
+
+    // 创建新项
+    onCreate(newItem)
   }
 
   return (
@@ -146,6 +210,19 @@ export default function EditModal({ item, onClose, onSave }: EditModalProps) {
                 onChange={(value) => setFormData({ ...formData, satisfaction: value })}
               />
             </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-0.5">已购入</label>
+              <label className="flex items-center h-[34px] px-3 py-1.5 cursor-pointer border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={formData.isPurchased || false}
+                  onChange={(e) => setFormData({ ...formData, isPurchased: e.target.checked })}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm text-gray-700">已购入</span>
+              </label>
+            </div>
           </div>
 
           <div className="mt-3">
@@ -170,13 +247,17 @@ export default function EditModal({ item, onClose, onSave }: EditModalProps) {
 
           {formData.images.length > 1 && (
             <div className="mt-3">
-              <label className="block text-xs font-medium text-gray-700 mb-1">选择主图</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">选择主图（双击预览，点击删除按钮分离）</label>
               <div className="grid grid-cols-6 gap-1.5">
                 {formData.images.map((image, index) => (
                   <div
                     key={index}
                     onClick={() => setFormData({ ...formData, primaryImageIndex: index })}
-                    className={`relative cursor-pointer rounded overflow-hidden border-2 transition-all ${
+                    onDoubleClick={() => {
+                      setPreviewImageIndex(index)
+                      setIsImagePreviewOpen(true)
+                    }}
+                    className={`relative cursor-pointer rounded overflow-hidden border-2 transition-all group ${
                       (formData.primaryImageIndex || 0) === index
                         ? 'border-blue-600 ring-1 ring-blue-600'
                         : 'border-gray-200 hover:border-blue-400'
@@ -192,6 +273,18 @@ export default function EditModal({ item, onClose, onSave }: EditModalProps) {
                         主图
                       </div>
                     )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (window.confirm('确定要将此图片分离为新项目吗？')) {
+                          handleRemoveImage(index, image)
+                        }
+                      }}
+                      className="absolute bottom-0.5 right-0.5 bg-red-600 hover:bg-red-700 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="分离图片"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -225,6 +318,61 @@ export default function EditModal({ item, onClose, onSave }: EditModalProps) {
           </div>
         </form>
       </div>
+
+      {isImagePreviewOpen && (
+        <div
+          className="fixed inset-0 bg-black/90 z-[60] flex items-center justify-center p-4"
+          onClick={() => setIsImagePreviewOpen(false)}
+        >
+          <button
+            onClick={() => setIsImagePreviewOpen(false)}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
+          >
+            <X className="w-8 h-8" />
+          </button>
+
+          <div className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center">
+            <img
+              src={formData.images[previewImageIndex]}
+              alt={`预览 ${previewImageIndex + 1}`}
+              className="max-w-full max-h-full object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+
+            {formData.images.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setPreviewImageIndex((prev) => (prev - 1 + formData.images.length) % formData.images.length)
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-colors"
+                >
+                  <ChevronLeft className="w-8 h-8" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setPreviewImageIndex((prev) => (prev + 1) % formData.images.length)
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-colors"
+                >
+                  <ChevronRight className="w-8 h-8" />
+                </button>
+
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                  {formData.images.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-all ${index === previewImageIndex ? 'bg-white w-8' : 'bg-white/50'}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { ViewMode } from '../types'
-import { Grid, Calendar, BarChart3, Download, Copy, Tag, MapPin, Sparkles, Shirt, Package } from 'lucide-react'
+import { Grid, Calendar, BarChart3, Download, Copy, Tag, MapPin, Sparkles, Shirt, Package, DollarSign } from 'lucide-react'
 
 interface HeaderProps {
   viewMode: ViewMode
@@ -12,7 +12,7 @@ interface HeaderProps {
 
 export default function Header({ viewMode, setViewMode, showAnalytics, setShowAnalytics, onExport, onCopyToClipboard }: HeaderProps) {
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900">穿搭数据库</h1>
@@ -75,7 +75,7 @@ export default function Header({ viewMode, setViewMode, showAnalytics, setShowAn
                 >
                   <Tag className="w-4 h-4" />
                 </button>
-                <button
+                {/* <button
                   onClick={() => setViewMode('size')}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     viewMode === 'size' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900'
@@ -83,8 +83,8 @@ export default function Header({ viewMode, setViewMode, showAnalytics, setShowAn
                   title="尺码"
                 >
                   <Shirt className="w-4 h-4" />
-                </button>
-                <button
+                </button> */}
+                {/* <button
                   onClick={() => setViewMode('material')}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     viewMode === 'material' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900'
@@ -92,7 +92,7 @@ export default function Header({ viewMode, setViewMode, showAnalytics, setShowAn
                   title="材质"
                 >
                   <Package className="w-4 h-4" />
-                </button>
+                </button> */}
                 <button
                   onClick={() => setViewMode('style')}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -110,6 +110,15 @@ export default function Header({ viewMode, setViewMode, showAnalytics, setShowAn
                   title="地点"
                 >
                   <MapPin className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode('price')}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    viewMode === 'price' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                  title="价格档位"
+                >
+                  <DollarSign className="w-4 h-4" />
                 </button>
               </div>
             )}
