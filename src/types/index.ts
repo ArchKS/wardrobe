@@ -23,11 +23,11 @@ export interface WardrobeData {
   items: ClothingItem[];
 }
 
-export type ViewMode = 'grid' | 'timeline' | 'category' | 'brand' | 'location' | 'style' | 'material' | 'part';
+export type ViewMode = 'grid' | 'timeline' | 'category' | 'brand' | 'location' | 'style' | 'material' | 'size';
 
 export interface FilterOptions {
   brands: string[];
-  parts: string[];
+  size: string[];
   categories: string[];
   styles: string[];
   materials: string[];

@@ -18,7 +18,7 @@ export default function Filters({ items, filters, setFilters, isOpen, onToggle }
   const allMaterials = useMemo(() => [...new Set(items.map(item => item.material))].sort(), [items])
   const allScenes = useMemo(() => [...new Set(items.map(item => item.scene))].sort(), [items])
 
-  const toggleFilter = (type: keyof Pick<FilterOptions, 'brands' | 'parts' | 'categories' | 'styles' | 'materials' | 'scenes'>, value: string) => {
+  const toggleFilter = (type: keyof Pick<FilterOptions, 'brands' | 'size' | 'categories' | 'styles' | 'materials' | 'scenes'>, value: string) => {
     setFilters({
       ...filters,
       [type]: filters[type].includes(value)
@@ -43,7 +43,7 @@ export default function Filters({ items, filters, setFilters, isOpen, onToggle }
   const clearAllFilters = () => {
     setFilters({
       brands: [],
-      parts: [],
+      size: [],
       categories: [],
       styles: [],
       materials: [],
@@ -55,7 +55,7 @@ export default function Filters({ items, filters, setFilters, isOpen, onToggle }
 
   const hasActiveFilters =
     filters.brands.length > 0 ||
-    filters.parts.length > 0 ||
+    filters.size.length > 0 ||
     filters.categories.length > 0 ||
     filters.styles.length > 0 ||
     filters.materials.length > 0 ||
@@ -128,17 +128,17 @@ export default function Filters({ items, filters, setFilters, isOpen, onToggle }
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-3">尺码</label>
           <div className="flex flex-wrap gap-2">
-            {allParts.map(part => (
+            {allParts.map(size => (
               <button
-                key={part}
-                onClick={() => toggleFilter('parts', part)}
+                key={size}
+                onClick={() => toggleFilter('size', size)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                  filters.parts.includes(part)
+                  filters.size.includes(size)
                     ? 'bg-blue-600 text-white shadow-sm'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                {part}
+                {size}
               </button>
             ))}
           </div>

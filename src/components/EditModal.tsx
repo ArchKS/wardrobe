@@ -64,7 +64,7 @@ export default function EditModal({ item, onClose, onSave }: EditModalProps) {
               <SearchableSelect
                 value={formData.size}
                 onChange={(value) => setFormData({ ...formData, size: value })}
-                options={config.parts}
+                options={config.size}
                 placeholder="尺码"
               />
             </div>

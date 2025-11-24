@@ -1,5 +1,5 @@
 import { ViewMode } from '../types'
-import { Grid, Calendar, BarChart3, Download, Tag, MapPin, Sparkles, Shirt, Package } from 'lucide-react'
+import { Grid, Calendar, BarChart3, Download, Copy, Tag, MapPin, Sparkles, Shirt, Package } from 'lucide-react'
 
 interface HeaderProps {
   viewMode: ViewMode
@@ -7,9 +7,10 @@ interface HeaderProps {
   showAnalytics: boolean
   setShowAnalytics: (show: boolean) => void
   onExport: () => void
+  onCopyToClipboard?: () => void
 }
 
-export default function Header({ viewMode, setViewMode, showAnalytics, setShowAnalytics, onExport }: HeaderProps) {
+export default function Header({ viewMode, setViewMode, showAnalytics, setShowAnalytics, onExport, onCopyToClipboard }: HeaderProps) {
   return (
     <header className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -75,9 +76,9 @@ export default function Header({ viewMode, setViewMode, showAnalytics, setShowAn
                   <Tag className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => setViewMode('part')}
+                  onClick={() => setViewMode('size')}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    viewMode === 'part' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+                    viewMode === 'size' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900'
                   }`}
                   title="尺码"
                 >
@@ -120,6 +121,16 @@ export default function Header({ viewMode, setViewMode, showAnalytics, setShowAn
               <Download className="w-4 h-4" />
               导出数据
             </button>
+
+            {onCopyToClipboard && (
+              <button
+                onClick={onCopyToClipboard}
+                className="px-4 py-2 bg-green-300 text-black  rounded-lg hover:bg-green-400 pointer-cursor transition-colors flex items-center gap-2"
+              >
+                <Copy className="w-4 h-4" />
+                复制配置
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -1,19 +1,21 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { ClothingItem, ViewMode, FilterOptions } from './types'
 import wardrobeData from './data/wardrobe.json'
 import Gallery from './components/Gallery'
 import Filters from './components/Filters'
 import Analytics from './components/Analytics'
 import Header from './components/Header'
+import Toast from './components/Toast'
 
 function App() {
   const [items, setItems] = useState<ClothingItem[]>(wardrobeData.items)
   const [viewMode, setViewMode] = useState<ViewMode>('timeline')
   const [showAnalytics, setShowAnalytics] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
+  const [showToast, setShowToast] = useState(false)
   const [filters, setFilters] = useState<FilterOptions>({
     brands: [],
-    parts: [],
+    size: [],
     categories: [],
     styles: [],
     materials: [],
@@ -27,7 +29,7 @@ function App() {
       // 过滤掉已标记删除的项
       if (item.isDelete === 1) return false
       if (filters.brands.length > 0 && !filters.brands.some(b => item.brand.includes(b))) return false
-      if (filters.parts.length > 0 && !filters.parts.includes(item.part)) return false
+      if (filters.size.length > 0 && !filters.size.includes(item.size)) return false
       if (filters.categories.length > 0 && !filters.categories.some(c => item.category.includes(c))) return false
       if (filters.styles.length > 0 && !filters.styles.some(s => item.style.includes(s))) return false
       if (filters.materials.length > 0 && !filters.materials.includes(item.material)) return false
@@ -85,6 +87,26 @@ function App() {
     URL.revokeObjectURL(url)
   }
 
+  const handleCopyToClipboard = async () => {
+    try {
+      const dataStr = JSON.stringify({ items }, null, 2)
+      await navigator.clipboard.writeText(dataStr)
+      setShowToast(true)
+    } catch (err) {
+      console.error('复制失败:', err)
+      alert('复制失败，请重试')
+    }
+  }
+
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [showToast])
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header
@@ -93,6 +115,7 @@ function App() {
         showAnalytics={showAnalytics}
         setShowAnalytics={setShowAnalytics}
         onExport={handleExportData}
+        onCopyToClipboard={handleCopyToClipboard}
       />
 
       <Filters
@@ -116,6 +139,8 @@ function App() {
           />
         )}
       </div>
+
+      <Toast show={showToast} message="配置已复制到剪贴板！" />
     </div>
   )
 }

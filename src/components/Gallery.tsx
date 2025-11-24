@@ -37,7 +37,7 @@ export default function Gallery({ items, viewMode, onUpdateItem, onMergeItems, o
     return <CategoryView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
   } else if (viewMode === 'brand') {
     return <BrandView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
-  } else if (viewMode === 'part') {
+  } else if (viewMode === 'size') {
     return <PartView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
   } else if (viewMode === 'material') {
     return <MaterialView items={items} onUpdateItem={onUpdateItem} onMergeItems={onMergeItems} onDeleteItem={onDeleteItem} />
@@ -181,23 +181,23 @@ function PartView({ items, onUpdateItem, onMergeItems, onDeleteItem }: { items: 
   const groupedByPart = useMemo(() => {
     const groups: Record<string, ClothingItem[]> = {}
     items.forEach(item => {
-      const part = item.part || '其他'
-      if (!groups[part]) {
-        groups[part] = []
+      const size = item.size || '其他'
+      if (!groups[size]) {
+        groups[size] = []
       }
-      groups[part].push(item)
+      groups[size].push(item)
     })
     return Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0]))
   }, [items])
 
   return (
     <div className="space-y-6">
-      {groupedByPart.map(([part, partItems]) => (
-        <div key={part} className="relative">
+      {groupedByPart.map(([size, partItems]) => (
+        <div key={size} className="relative">
           <div className="flex items-center gap-4 mb-3">
             <div className="w-3 h-3 rounded-full bg-blue-600"></div>
             <h3 className="text-lg font-semibold text-gray-900">
-              {part} ({partItems.length}) {getStarRating(partItems)}
+              {size} ({partItems.length}) {getStarRating(partItems)}
             </h3>
             <div className="flex-1 h-px bg-gray-200"></div>
           </div>
