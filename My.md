@@ -134,3 +134,5 @@ npm run minsize
 # 24、添加已购入字段
 
 # 25、置顶吸顶
+
+# 26、wardrobe.json复制到剪切板
