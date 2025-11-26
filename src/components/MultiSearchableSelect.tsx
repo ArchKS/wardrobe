@@ -123,7 +123,7 @@ export default function MultiSearchableSelect({
       isSearchable
       className={className}
       noOptionsMessage={() => '无匹配选项'}
-      closeMenuOnSelect={false}
+      closeMenuOnSelect={true}
     />
   )
 }

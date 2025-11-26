@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ClothingItem } from '../types'
 import { X, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react'
 import config from '../data/config.json'
@@ -17,6 +17,19 @@ export default function EditModal({ item, onClose, onSave, onCreate }: EditModal
   const [formData, setFormData] = useState(item)
   const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false)
   const [previewImageIndex, setPreviewImageIndex] = useState(0)
+
+  // 禁止背景滚动
+  useEffect(() => {
+    // 保存原始的overflow值
+    const originalOverflow = document.body.style.overflow
+    // 禁止滚动
+    document.body.style.overflow = 'hidden'
+
+    // 清理函数：恢复滚动
+    return () => {
+      document.body.style.overflow = originalOverflow
+    }
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -276,9 +289,9 @@ export default function EditModal({ item, onClose, onSave, onCreate }: EditModal
                     <button
                       onClick={(e) => {
                         e.stopPropagation()
-                        if (window.confirm('确定要将此图片分离为新项目吗？')) {
-                          handleRemoveImage(index, image)
-                        }
+                        handleRemoveImage(index, image)
+                        // if (window.confirm('确定要将此图片分离为新项目吗？')) {
+                        // }
                       }}
                       className="absolute bottom-0.5 right-0.5 bg-red-600 hover:bg-red-700 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
                       title="分离图片"

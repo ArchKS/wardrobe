@@ -80,6 +80,20 @@ function App() {
     setItems(prev => [...prev, newItem])
   }
 
+  const handleMoveToFirst = (id: string) => {
+    setItems(prev => {
+      const itemIndex = prev.findIndex(item => item.id === id)
+      if (itemIndex === -1 || itemIndex === 0) return prev
+
+      const item = prev[itemIndex]
+      const newItems = [...prev]
+      newItems.splice(itemIndex, 1)  // 从原位置移除
+      newItems.unshift(item)  // 插入到数组开头
+
+      return newItems
+    })
+  }
+
   const handleExportData = () => {
     const dataStr = JSON.stringify({ items }, null, 2)
     const dataBlob = new Blob([dataStr], { type: 'application/json' })
@@ -141,6 +155,7 @@ function App() {
             onMergeItems={handleMergeItems}
             onDeleteItem={handleDeleteItem}
             onCreateItem={handleCreateItem}
+            onMoveToFirst={handleMoveToFirst}
           />
         )}
       </div>

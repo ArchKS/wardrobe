@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ClothingItem } from '../types'
-import { ChevronLeft, ChevronRight, Star, Edit2, MapPin, Calendar, GripVertical, Trash2, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Star, Edit2, MapPin, Calendar, GripVertical, Trash2, X, ArrowUp } from 'lucide-react'
 import EditModal from './EditModal'
 import LazyImage from './LazyImage'
 
@@ -10,9 +10,10 @@ interface ClothingCardProps {
   onMerge: (sourceId: string, targetId: string) => void
   onDelete: (id: string) => void
   onCreate: (item: ClothingItem) => void
+  onMoveToFirst: (id: string) => void
 }
 
-export default function ClothingCard({ item, onUpdate, onMerge, onDelete, onCreate }: ClothingCardProps) {
+export default function ClothingCard({ item, onUpdate, onMerge, onDelete, onCreate, onMoveToFirst }: ClothingCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(item.primaryImageIndex || 0)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
@@ -62,9 +63,9 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete, onCrea
   }
 
   const handleDelete = () => {
-    if (window.confirm('确定要删除这件衣服吗？此操作无法撤销。')) {
-      onDelete(item.id)
-    }
+    onDelete(item.id)
+    // if (window.confirm('确定要删除这件衣服吗？此操作无法撤销。')) {
+    // }
   }
 
   return (
@@ -130,7 +131,15 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete, onCrea
             <Trash2 className="w-4 h-4" />
           </button>
 
-          <div className="absolute top-2 left-2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={() => onMoveToFirst(item.id)}
+            className="absolute top-2 left-2 bg-purple-600/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-purple-700"
+            title="移到最前"
+          >
+            <ArrowUp className="w-4 h-4" />
+          </button>
+
+          <div className="absolute top-14 left-2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
             <GripVertical className="w-4 h-4" />
           </div>
 
@@ -156,8 +165,13 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete, onCrea
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-4 h-4 ${i < item.satisfaction ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-                    }`}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onUpdate({ ...item, satisfaction: i + 1 })
+                  }}
+                  className={`w-4 h-4 cursor-pointer transition-all hover:scale-110 ${
+                    i < item.satisfaction ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 hover:text-yellow-200'
+                  }`}
                 />
               ))}
             </div>

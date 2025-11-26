@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create:*)",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss init -p)",
+      "Bash(mkdir:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(tree:*)",
+      "Bash(npm run sync:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill -9:*)",
+      "Bash(npm run fix-ids:*)",
+      "Bash(node scripts/add-field.js:*)",
+      "Bash(node scripts/add-field.cjs:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

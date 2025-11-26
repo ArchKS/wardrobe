@@ -1,5 +1,5 @@
 import { ViewMode } from '../types'
-import { Grid, Calendar, BarChart3, Download, Copy, Tag, MapPin, Sparkles, Shirt, Package, DollarSign } from 'lucide-react'
+import { Grid, Calendar, BarChart3, Download, Copy, Tag, MapPin, Sparkles, DollarSign } from 'lucide-react'
 
 interface HeaderProps {
   viewMode: ViewMode
