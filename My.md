@@ -148,3 +148,5 @@ npm run minsize
 
 # 设置在前面
 在展示列表上加一个按钮，可以把当前项设置在列表数组第一个，但不是置顶，之后还可以有项设置在前面，那这个就排到第二个去了，其实就是把数组当前项放到下标为0的位置
+
+<!-- https://www.shutterstock.com/zh/image-design-tools/image-cropper?dd_referrer=https%3A%2F%2Fwww.google.com.hk%2F -->

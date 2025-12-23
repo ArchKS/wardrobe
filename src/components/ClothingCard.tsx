@@ -169,9 +169,8 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete, onCrea
                     e.stopPropagation()
                     onUpdate({ ...item, satisfaction: i + 1 })
                   }}
-                  className={`w-4 h-4 cursor-pointer transition-all hover:scale-110 ${
-                    i < item.satisfaction ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 hover:text-yellow-200'
-                  }`}
+                  className={`w-4 h-4 cursor-pointer transition-all hover:scale-110 ${i < item.satisfaction ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 hover:text-yellow-200'
+                    }`}
                 />
               ))}
             </div>
@@ -180,7 +179,7 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete, onCrea
           <p className="text-sm text-gray-600 mb-2">{item.category.join(', ') || '未分类'}</p>
 
           {
-            item.style && item.style.filter(v=>v.trim()!="").length ? <div className="flex flex-wrap gap-1 mb-3">
+            item.style && item.style.filter(v => v.trim() != "").length ? <div className="flex flex-wrap gap-1 mb-3">
               {item.style.map(style => (
                 <span key={style} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
                   {style}
@@ -191,15 +190,21 @@ export default function ClothingCard({ item, onUpdate, onMerge, onDelete, onCrea
 
 
           <div className="space-y-1 text-xs text-gray-500">
-            <div className="flex items-center gap-1">
+            {
+              item.time && (<div className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
               <span>{item.time}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              <span>{item.location}</span>
-            </div>
+            </div>)
+            }
+            
+            {
+              item.location && (<div className="flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                <span>{item.location}</span>
+              </div>)
+            }
           </div>
+
 
           {item.price && (
             <p className="mt-2 text-sm font-semibold text-gray-900">¥{item.price}</p>

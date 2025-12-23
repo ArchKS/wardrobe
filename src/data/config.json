@@ -23,11 +23,16 @@
     "NIKE",
     "Niko",
     "MLB",
+    "FILA",
     "Sacai",
+    "猛犸象",
+    "速写",
+    "vorui",
     "GentleSpace",
     "KingBaby",
     "施华洛世奇",
     "Yohji",
+    "真乐时",
     "其他"
   ],
   "categories": [
@@ -43,6 +48,7 @@
     "鞋子",
     "配饰",
     "帽子",
+    "手表",
     "包"
   ],
   "materials": [

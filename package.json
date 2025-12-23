@@ -6,7 +6,6 @@
   "scripts": {
     "sync": "node scripts/sync-images.js",
     "clean": "node scripts/clean-images.js",
-    "convert": "node scripts/convert-heic.js",
     "convert-webp": "node scripts/convert-to-webp.js",
     "fix-ids": "node scripts/fix-duplicate-ids.js",
     "minsize": "node scripts/minsize.js",
